@@ -1,6 +1,6 @@
 module github.com/thisguycodes/modelstack
 
-go 1.21.3
+go 1.18
 
 require github.com/charmbracelet/bubbletea v0.24.2
 
