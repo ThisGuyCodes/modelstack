@@ -41,7 +41,7 @@ jobs:
       with:
         go-version: ${{ matrix.version }}
     - name: fmt
-      run: gofmt -e -d
+      run: gofmt -e -d .
   vet:
     strategy:
       matrix:
