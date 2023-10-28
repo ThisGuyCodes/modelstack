@@ -9,6 +9,24 @@ type Element[T any] struct {
 	Value T
 }
 
+func New[T any](init ...T) *Stack[T] {
+	s := &Stack[T]{}
+
+	if len(init) > 0 {
+		elems := make([]Element[T], len(init))
+		for i, val := range init {
+			elems[i] = Element[T]{
+				Value: val,
+			}
+			if i < len(elems)-1 {
+				elems[i].next = &elems[i+1]
+			}
+		}
+		s.current = &elems[0]
+	}
+	return s
+}
+
 // Stack is a generic stack datastructure
 type Stack[T any] struct {
 	current *Element[T]
