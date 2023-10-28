@@ -1,5 +1,10 @@
 package stack
 
+type noCopy struct{}
+
+func (*noCopy) Lock()   {}
+func (*noCopy) Unlock() {}
+
 // Element is an Element of a stack.
 type Element[T any] struct {
 	// Next Element in the stack
@@ -29,6 +34,7 @@ func New[T any](init ...T) *Stack[T] {
 
 // Stack is a generic stack datastructure
 type Stack[T any] struct {
+	noCopy  noCopy
 	current *Element[T]
 }
 
