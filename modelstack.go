@@ -27,13 +27,14 @@ func Pop() tea.Msg {
 func New(m tea.Model) ModelStack {
 	return ModelStack{
 		current: m,
+		stack:   stack.New[tea.Model](),
 	}
 }
 
 type ModelStack struct {
 	current    tea.Model
 	lastResize tea.WindowSizeMsg
-	stack      stack.Stack[tea.Model]
+	stack      *stack.Stack[tea.Model]
 }
 
 func (m ModelStack) View() string {
