@@ -14,7 +14,12 @@ type PushModel struct {
 
 // PopModel is a tea.Msg that instructs a ModelStack to remove the current
 // tea.Model from the stack and pass control to the previous tea.Model
-type PopModel struct{}
+type PopModel struct {
+	// Msgs are tea.Msg-s that will be passed to the parent model synchronously
+	// when it regains control (before its first call to .View(), after calling
+	// .Init())
+	Msgs []tea.Msg
+}
 
 // Push is a tea.Cmd used to send a PushModel tea.Msg
 func Push(m tea.Model) func() tea.Msg {
@@ -26,8 +31,10 @@ func Push(m tea.Model) func() tea.Msg {
 }
 
 // Pop is a tea.Cmd used to send a PopModel tea.Msg
-func Pop() tea.Msg {
-	return PopModel{}
+func Pop(msgs ...tea.Msg) tea.Msg {
+	return PopModel{
+		Msgs: msgs,
+	}
 }
 
 // New creates a new Modelstack with an initial tea.Model
@@ -73,9 +80,13 @@ func (m ModelStack) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Batch(cmd, cmd2)
 	case PopModel:
 		m.current = m.stack.Pop().Value
-		cmd := m.current.Init()
-		cmd2 := m.updateCurrent(m.lastResize)
-		return m, tea.Batch(cmd, cmd2)
+		cmds := make(tea.BatchMsg, 2+len(msg.Msgs))
+		cmds[0] = m.current.Init()
+		cmds[1] = m.updateCurrent(m.lastResize)
+		for i, msg := range msg.Msgs {
+			cmds[i+2] = m.updateCurrent(msg)
+		}
+		return m, tea.Batch(cmds...)
 	}
 
 	cmd := m.updateCurrent(msg)
