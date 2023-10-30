@@ -15,6 +15,9 @@ type PushModel struct {
 // PopModel is a tea.Msg that instructs a ModelStack to remove the current
 // tea.Model from the stack and pass control to the previous tea.Model
 type PopModel struct {
+	// Msgs are tea.Msg-s that will be passed to the parent model synchronously
+	// when it regains control (before its first call to .View(), after calling
+	// .Init())
 	Msgs []tea.Msg
 }
 
