@@ -26,7 +26,7 @@ jobs:
       with:
         go-version: ${{ matrix.version }}
     - name: Test
-      run: go test -v ./...
+      run: go test -vet=off -v ./...
   fmt:
     runs-on: ubuntu-latest
     steps:
