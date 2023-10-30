@@ -10,7 +10,9 @@ type PushModel struct {
 	Model tea.Model
 }
 
-type PopModel struct{}
+type PopModel struct {
+	Msgs []tea.Msg
+}
 
 func Push(m tea.Model) func() tea.Msg {
 	return func() tea.Msg {
@@ -20,8 +22,10 @@ func Push(m tea.Model) func() tea.Msg {
 	}
 }
 
-func Pop() tea.Msg {
-	return PopModel{}
+func Pop(msgs ...tea.Msg) tea.Msg {
+	return PopModel{
+		Msgs: msgs,
+	}
 }
 
 func New(m tea.Model) ModelStack {
@@ -59,9 +63,13 @@ func (m ModelStack) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Batch(cmd, cmd2)
 	case PopModel:
 		m.current = m.stack.Pop().Value
-		cmd := m.current.Init()
-		cmd2 := m.updateCurrent(m.lastResize)
-		return m, tea.Batch(cmd, cmd2)
+		cmds := make(tea.BatchMsg, 2+len(msg.Msgs))
+		cmds[0] = m.current.Init()
+		cmds[1] = m.updateCurrent(m.lastResize)
+		for i, msg := range msg.Msgs {
+			cmds[i+2] = m.updateCurrent(msg)
+		}
+		return m, tea.Batch(cmds...)
 	}
 
 	cmd := m.updateCurrent(msg)
