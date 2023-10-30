@@ -21,8 +21,8 @@ type PopModel struct {
 	Msgs []tea.Msg
 }
 
-// Push is a tea.Cmd used to send a PushModel tea.Msg
-func Push(m tea.Model) func() tea.Msg {
+// Push returns s a tea.Cmd used to send a PushModel tea.Msg
+func Push(m tea.Model) tea.Cmd {
 	return func() tea.Msg {
 		return PushModel{
 			Model: m,
@@ -30,10 +30,13 @@ func Push(m tea.Model) func() tea.Msg {
 	}
 }
 
-// Pop is a tea.Cmd used to send a PopModel tea.Msg
-func Pop(msgs ...tea.Msg) tea.Msg {
-	return PopModel{
-		Msgs: msgs,
+// Pop returns a tea.Cmd used to send a PopModel tea.Msg. Optionally you can
+// give it tea.Msg-s to pass to the parent tea.Model.
+func Pop(msgs ...tea.Msg) tea.Cmd {
+	return func() tea.Msg {
+		return PopModel{
+			Msgs: msgs,
+		}
 	}
 }
 
