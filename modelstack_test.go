@@ -208,7 +208,7 @@ func TestPush(t *testing.T) {
 func TestPop(t *testing.T) {
 	t.Parallel()
 
-	msg := modelstack.Pop("butts")
+	msg := modelstack.Pop("butts")()
 
 	assert.Equal(t, "butts", msg.(modelstack.PopModel).Msgs[0])
 }
