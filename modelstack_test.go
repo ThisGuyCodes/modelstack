@@ -54,8 +54,9 @@ func TestModelstack_Push(t *testing.T) {
 
 	var ms tea.Model = modelstack.New(newDumbModel("butts"))
 	ms, _ = ms.Update(modelstack.PushModel{Model: newDumbModel("alsobutts")})
+	ms, _ = ms.Update(modelstack.PushModel{Model: newDumbModel("morebutts")})
 
-	assert.Equal(t, "alsobutts", ms.View())
+	assert.Equal(t, "morebutts", ms.View())
 }
 
 func TestModelstack_Pop(t *testing.T) {
@@ -63,6 +64,10 @@ func TestModelstack_Pop(t *testing.T) {
 
 	var ms tea.Model = modelstack.New(newDumbModel("butts"))
 	ms, _ = ms.Update(modelstack.PushModel{Model: newDumbModel("alsobutts")})
+	ms, _ = ms.Update(modelstack.PopModel{})
+	ms, _ = ms.Update(modelstack.PushModel{Model: newDumbModel("morebutts")})
+	ms, _ = ms.Update(modelstack.PushModel{Model: newDumbModel("furtherbutts")})
+	ms, _ = ms.Update(modelstack.PopModel{})
 	ms, _ = ms.Update(modelstack.PopModel{})
 
 	assert.Equal(t, "butts", ms.View())
