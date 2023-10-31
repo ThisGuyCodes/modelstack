@@ -63,6 +63,10 @@ func New(m tea.Model, opts ...Option) ModelStack {
 	for _, opt := range opts {
 		opt(&ms)
 	}
+
+	if ms.l == nil {
+		ms.l = slog.Default()
+	}
 	return ms
 }
 
