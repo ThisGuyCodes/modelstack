@@ -139,7 +139,7 @@ func (m ModelStack) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Batch(cmds...)
 	}
 
-	slog.Debug("passing through message")
+	m.l.Debug("passing through message")
 	cmd := m.updateCurrent(msg)
 
 	return m, cmd
