@@ -121,14 +121,14 @@ func (m ModelStack) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.lastResize = msg
 	case PushModel:
-		slog.Debug("pushing to stack")
+		m.l.Debug("pushing to stack")
 		m.stack.Push(m.current)
 		m.current = msg.Model
 		cmd := m.current.Init()
 		cmd2 := m.updateCurrent(m.lastResize)
 		return m, tea.Batch(cmd, cmd2)
 	case PopModel:
-		slog.Debug("popping off stack")
+		m.l.Debug("popping off stack")
 		m.current = m.stack.Pop().Value
 		cmds := make(tea.BatchMsg, 2+len(msg.Msgs))
 		cmds[0] = m.current.Init()
@@ -148,6 +148,6 @@ func (m ModelStack) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // Init fulfills the tea.Model interface, currently it just calls Init() on the
 // current tea.Model on the stack
 func (m ModelStack) Init() tea.Cmd {
-	slog.Debug(".Init() called")
+	m.l.Debug(".Init() called")
 	return m.current.Init()
 }
