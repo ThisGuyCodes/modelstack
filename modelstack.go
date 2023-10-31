@@ -1,10 +1,15 @@
 package modelstack
 
 import (
+	"log/slog"
+
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/thisguycodes/modelstack/internal/stack"
 )
+
+// Option is used to set options when initializing a ModelStack
+type Option func(*ModelStack)
 
 // PushModel is a tea.Msg that instructs a ModelStack to add a new tea.Model to
 // the stack and pass control to it
@@ -41,11 +46,15 @@ func Pop(msgs ...tea.Msg) tea.Cmd {
 }
 
 // New creates a new Modelstack with an initial tea.Model
-func New(m tea.Model) ModelStack {
-	return ModelStack{
+func New(m tea.Model, opts ...Option) ModelStack {
+	ms := ModelStack{
 		current: m,
 		stack:   stack.New[tea.Model](),
 	}
+	for _, opt := range opts {
+		opt(&ms)
+	}
+	return ms
 }
 
 // ModelStack is a tea.Model that listens for PushModel and PopModel tea.Msg's
@@ -54,6 +63,7 @@ type ModelStack struct {
 	current    tea.Model
 	lastResize tea.WindowSizeMsg
 	stack      *stack.Stack[tea.Model]
+	l          *slog.Logger
 }
 
 // View fulfills the tea.Model interface, rendering the currently active
