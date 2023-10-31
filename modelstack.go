@@ -11,6 +11,13 @@ import (
 // Option is used to set options when initializing a ModelStack
 type Option func(*ModelStack)
 
+// WithSlogger attaches a *slog.Logger to a ModelStack
+func WithSlogger(l *slog.Logger) Option {
+	return func(ms *ModelStack) {
+		ms.l = l
+	}
+}
+
 // PushModel is a tea.Msg that instructs a ModelStack to add a new tea.Model to
 // the stack and pass control to it
 type PushModel struct {
